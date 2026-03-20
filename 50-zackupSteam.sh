@@ -12,7 +12,7 @@ zackupSteam () {
   echo "sudo elevated privileges"
   if ! sudo -v; then
     echo "authentication failed: we're done here!"
-    exit 1
+    return 1
   fi
 
   # keep the sudo session alive, in the background

@@ -20,10 +20,6 @@ zackupSteam () {
   echo "starting sudo -v keepalive loop in the background"
   (while sleep 60; do sudo -v; done) & SUDO_LOOP_PID=$!
 
-  # kill the sudo loop when the script ends
-  echo "clean up: setting EXIT trap for SUDO_LOOP_PID = $SUDO_LOOP_PID"
-  trap 'kill "$SUDO_LOOP_PID"' EXIT
-
   #initialise variables
   echo "initialising variables"
   NOW=$($(which date) +"%Y%m%d%H%M%S") # quirk, due to conflicting alias
@@ -51,4 +47,9 @@ zackupSteam () {
   else
     echo "skipping destruction of previous snapshots (use --destroy to enable)"
   fi
+
+  # kill the sudo loop when the script/function ends
+  # no automated traps, just kill it, explicitely
+  echo "clean up: kill sudo keepalive background loop SUDO_LOOP_PID = $SUDO_LOOP_PID"
+  kill "$SUDO_LOOP_PID"
 }

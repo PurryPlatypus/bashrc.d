@@ -8,17 +8,17 @@ zackupSteam () {
     return 1
   fi
 
+  # keep the sudo session alive, in the background
+  # this is required for long runtime / large snapshots
+  echo "starting sudo -v keepalive loop in the background"
+  (while sleep 60; do sudo -v; done) & SUDO_LOOP_PID=$!
+
   # detect destructive mode flag
   DESTROY=false
   if [[ "$1" == "--destroy" ]]; then
     echo "destructive --destroy mode enabled"
     DESTROY=true
   fi
-
-  # keep the sudo session alive, in the background
-  # this is required for long runtime / large snapshots
-  echo "starting sudo -v keepalive loop in the background"
-  (while sleep 60; do sudo -v; done) & SUDO_LOOP_PID=$!
 
   #initialise variables
   echo "initialising variables"

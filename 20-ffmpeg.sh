@@ -36,10 +36,9 @@ ffinvert () {
 
 # print refined ffmpeg transpose/rotate help text
 fftranspose () {
-  echo -e "\nffmpeg -i in.mov -vf "transpose=1" out.mov
-
-0 = 90CounterCLockwise and Vertical Flip (default)
-1 = 90Clockwise
-2 = 90CounterClockwise
-3 = 90Clockwise and Vertical Flip\n"
+  echo -e "\nffmpeg -i in.mov -vf \"transpose=1\" out.mov\n"\
+  "0 = 90CounterCLockwise and Vertical Flip (default)\n"\
+  "1 = 90Clockwise\n"\
+  "2 = 90CounterClockwise\n"\
+  "3 = 90Clockwise and Vertical Flip\n"
 }

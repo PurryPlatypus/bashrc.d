@@ -1,18 +1,18 @@
 zackupSteam () {
   echo "zackupSteam - ZFS Steam Backup"
 
-  # detect destructive mode flag
-  DESTROY=false
-  if [[ "$1" == "--destroy" ]]; then
-    echo "destructive --destroy mode enabled"
-    DESTROY=true
-  fi
-
   # initialise sudo, ask password
   echo "sudo elevated privileges"
   if ! sudo -v; then
     echo "authentication failed: we're done here!"
     return 1
+  fi
+
+  # detect destructive mode flag
+  DESTROY=false
+  if [[ "$1" == "--destroy" ]]; then
+    echo "destructive --destroy mode enabled"
+    DESTROY=true
   fi
 
   # keep the sudo session alive, in the background

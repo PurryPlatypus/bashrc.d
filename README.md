@@ -11,3 +11,4 @@ for file in ~/.bashrc.d/[0-9][0-9]-*.sh; do
 done
 ```
 and that's where all my helper scripts live, now.
+(those are technically not scripts, but mostly aliases and bash functions ;)

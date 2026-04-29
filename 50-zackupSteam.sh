@@ -50,6 +50,8 @@ zackupSteam () {
 
   # kill the sudo loop when the script/function ends
   # no automated traps, just kill it, explicitely
-  echo "clean up: kill sudo keepalive background loop SUDO_LOOP_PID = $SUDO_LOOP_PID"
   kill "$SUDO_LOOP_PID"
+
+  # print log message to stdout AFTER killing the loop, to clean up the terminal output
+  echo "clean up: killed sudo keepalive background loop SUDO_LOOP_PID = $SUDO_LOOP_PID"
 }

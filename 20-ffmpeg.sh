@@ -42,3 +42,10 @@ fftranspose () {
   "2 = 90CounterClockwise\n"\
   "3 = 90Clockwise and Vertical Flip\n"
 }
+
+# add a most frugal audio track of silence, to an MP4 video
+# e.g.: a silent screen recording, which gets misrepresented as an image/gif, on social media (Mastodon, as of 2026-05-17)
+# this is a weird hack, in order to make the Mastodon UI show PROPER video transport control UI, instead of the basic/passive GIF nonesense
+ffaddsilence2mp4 () {
+  ffmpeg -i "$1" -f lavfi -i anullsrc=channel_layout=mono:sample_rate=8000 -c:v copy -c:a aac -b:a 6k -ar 8000 -ac 1 -shortest "$1+audioSilence.mp4"
+}

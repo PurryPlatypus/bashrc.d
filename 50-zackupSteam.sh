@@ -53,5 +53,7 @@ zackupSteam () {
   kill "$SUDO_LOOP_PID"
 
   # print log message to stdout AFTER killing the loop, to clean up the terminal output
+  # sleep 2 seconds, to give the background sudo loop pipeline a seemingly sufficient amount of time to finish its biz
+  sleep 2
   echo "clean up: killed sudo keepalive background loop SUDO_LOOP_PID = $SUDO_LOOP_PID"
 }

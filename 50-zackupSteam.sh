@@ -1,3 +1,28 @@
+# Here's an example of my local ZFS
+#
+# NAME                                             redacted  MOUNTPOINT
+# bigNVME                                          redacted  /bigNVME
+# bigNVME/Steam                                    redacted  /bigNVME/Steam
+# bigNVME/Steam@20261005082612                     redacted  -
+# bigNVME/Steam/Library                            redacted  /bigNVME/Steam/Library
+# bigNVME/Steam/Library@20261005082612             redacted  -
+# bigNVME/Steam/dotLocalShareSteam                 redacted  /home/user/.local/share/Steam
+# bigNVME/Steam/dotLocalShareSteam@20261005082612  redacted  -
+# bigNVME/Steam/dotSteam                           redacted  /home/user/.steam
+# bigNVME/Steam/dotSteam@20261005082612            redacted  -
+#
+# and this is what it looks like on the NAS
+#
+# tank/backup/Steam
+# tank/backup/Steam@20261005082612
+# tank/backup/Steam/Library
+# tank/backup/Steam/Library@20261005082612
+# tank/backup/Steam/dotLocalShareSteam
+# tank/backup/Steam/dotLocalShareSteam@20261005082612
+# tank/backup/Steam/dotSteam
+# tank/backup/Steam/dotSteam@20261005082612
+#
+# the rest SHOULD be self-splaining, just read the code
 zackupSteam () {
   echo "zackupSteam - ZFS Steam Backup"
 
@@ -23,7 +48,7 @@ zackupSteam () {
   #initialise variables
   echo "initialising variables"
   NOW=$($(which date) +"%Y%m%d%H%M%S") # quirk, due to conflicting alias
-  REMOTE_HOST="elitedesk.lan"
+  REMOTE_HOST="asrock.lan"
   LOCAL_Steam="bigNVME/Steam"
   LOCAL_Steam_CURRSNAP="$LOCAL_Steam@$NOW"
   LOCAL_Steam_PREVSNAP=$(zfs list -H -t snapshot -o name -s creation $LOCAL_Steam | tail -n1)

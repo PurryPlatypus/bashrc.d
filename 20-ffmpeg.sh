@@ -49,3 +49,42 @@ fftranspose () {
 ffaddsilence2mp4 () {
   ffmpeg -i "$1" -f lavfi -i anullsrc=channel_layout=mono:sample_rate=8000 -c:v copy -c:a aac -b:a 6k -ar 8000 -ac 1 -shortest "$1+audioSilence.mp4"
 }
+
+# Checks the first video stream's resolution and, if either dimension is odd,
+# crops one pixel from the right and/or bottom edge. Writes the cropped video
+# to INPUT_FILE.ffevenres.mkv, re-encoding video with libx264 while copying
+# other streams. Does nothing if both dimensions are already even.
+# vibe coded, using duck.ai / GPT-6 Luna
+# tested personally, does what it should
+ffevenres () {
+    if (( $# != 1 )); then
+        printf 'Usage: ffevenres INPUT_FILE\n' >&2
+        return 2
+    fi
+
+    local input=$1
+    local resolution output_width output_height output
+    local width height
+
+    resolution=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "$input") || return
+    if [[ ! $resolution =~ ^([0-9]+)x([0-9]+)$ ]]; then
+        printf 'Could not determine video resolution for: %s\n' "$input" >&2
+        return 1
+    fi
+
+    width=${BASH_REMATCH[1]}
+    height=${BASH_REMATCH[2]}
+
+    output_width=$width
+    output_height=$height
+
+    (( output_width % 2 )) && (( output_width-- ))
+    (( output_height % 2 )) && (( output_height-- ))
+
+    if (( output_width == width && output_height == height )); then
+        return 0
+    fi
+
+    output="${input}.ffevenres.mkv"
+    ffmpeg -i "$input" -map 0 -vf "crop=${output_width}:${output_height}:0:0" -c:v libx264 -c:a copy "$output"
+}

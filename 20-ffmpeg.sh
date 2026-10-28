@@ -57,34 +57,46 @@ ffaddsilence2mp4 () {
 # vibe coded, using duck.ai / GPT-6 Luna
 # tested personally, does what it should
 ffevenres () {
+    # Require exactly one input-file argument; print usage and return an error otherwise.
     if (( $# != 1 )); then
         printf 'Usage: ffevenres INPUT_FILE\n' >&2
         return 2
     fi
 
+    # Store the input path and declare variables for the resolution and output dimensions.
     local input=$1
     local resolution output_width output_height output
     local width height
 
+    # Read the first video stream's width and height using ffprobe.
     resolution=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "$input") || return
+
+    # Check that ffprobe returned dimensions in the expected WIDTHxHEIGHT format.
     if [[ ! $resolution =~ ^([0-9]+)x([0-9]+)$ ]]; then
         printf 'Could not determine video resolution for: %s\n' "$input" >&2
         return 1
     fi
 
+    # Capture the width and height from the matched resolution.
     width=${BASH_REMATCH[1]}
     height=${BASH_REMATCH[2]}
 
+    # Start with the original dimensions as the output dimensions.
     output_width=$width
     output_height=$height
 
+    # Reduce each odd dimension by one pixel so both output dimensions are even.
     (( output_width % 2 )) && (( output_width-- ))
     (( output_height % 2 )) && (( output_height-- ))
 
+    # If neither dimension needed adjustment, finish without creating an output file.
     if (( output_width == width && output_height == height )); then
         return 0
     fi
 
+    # Name the output file by appending the function's suffix to the input path.
     output="${input}.ffevenres.mkv"
+
+    # Crop to the adjusted dimensions, re-encode video with libx264, and copy audio.
     ffmpeg -i "$input" -map 0 -vf "crop=${output_width}:${output_height}:0:0" -c:v libx264 -c:a copy "$output"
 }
